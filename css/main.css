@@ -132,6 +132,8 @@ html {
   lang: ar;
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 body {
@@ -141,6 +143,7 @@ body {
   color: var(--gray-900);
   background: var(--off-white);
   overflow-x: hidden;
+  max-width: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

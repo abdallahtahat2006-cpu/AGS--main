@@ -1342,6 +1342,10 @@
   .service-detail-grid { grid-template-columns: 1fr; }
   .booking-grid { grid-template-columns: 1fr; }
   .products-grid { grid-template-columns: repeat(2, 1fr); }
+  
+  /* Fix Product Details on Mobile */
+  .product-gallery { position: static !important; }
+  .gallery-main { height: 280px !important; }
 }
 
 @media (max-width: 768px) {

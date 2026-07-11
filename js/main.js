@@ -181,9 +181,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ---- Footer accordion (mobile only) has been removed by request ----
+  // ---- Footer accordion (mobile only) ----
+  if (window.innerWidth <= 767) {
+    document.querySelectorAll('.footer-col-title').forEach(heading => {
+      const col = heading.parentElement;
+      if (!col) return;
 
+      heading.setAttribute('role', 'button');
+      heading.setAttribute('tabindex', '0');
 
+      const toggle = () => col.classList.toggle('accordion-open');
+      heading.addEventListener('click', toggle);
+      heading.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+      });
+    });
+  }
   // ---- Bottom tab bar – mark active page ----
   const currentPage = location.pathname.split('/').pop() || 'index.html';
   document.querySelectorAll('.mobile-bottom-bar a').forEach(a => {
@@ -265,6 +278,14 @@ function closeAll() {
    CART
    ============================== */
 let cartItems = [];
+try {
+  const savedCart = localStorage.getItem('checkoutCart');
+  if (savedCart) {
+    cartItems = JSON.parse(savedCart);
+  }
+} catch (e) {
+  console.error("Error loading cart:", e);
+}
 
 function toggleCart() {
   const cartDrawer = document.getElementById('cartDrawer');
@@ -330,6 +351,7 @@ async function addToCart(productId, event) {
 
     updateCartCount();
     renderCartItems();
+    localStorage.setItem('checkoutCart', JSON.stringify(cartItems));
     showToast('تمت الإضافة!', `تم إضافة "${product.title}" إلى السلة`, 'success');
   } catch (err) {
     showToast('خطأ', 'حدث خطأ أثناء إضافة المنتج. ' + err.message, 'error');
@@ -345,6 +367,7 @@ window.removeFromCart = function(productId) {
   cartItems = cartItems.filter(i => String(i.id) !== String(productId));
   updateCartCount();
   renderCartItems();
+  localStorage.setItem('checkoutCart', JSON.stringify(cartItems));
 };
 
 function renderCartItems() {
@@ -889,4 +912,6 @@ async function loadHomeFeaturesStrip() {
 
 document.addEventListener('DOMContentLoaded', () => {
   loadHomeFeaturesStrip();
+  updateCartCount();
+  renderCartItems();
 });
