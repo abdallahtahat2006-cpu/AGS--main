@@ -685,6 +685,13 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      // If on mobile, close all filter sections by default
+      if (window.innerWidth <= 768) {
+        document.querySelectorAll('.filter-title.open').forEach(t => {
+          t.classList.remove('open');
+        });
+      }
+
       // Collapse all filter sections on start
       document.querySelectorAll('.filter-title:not(.open)').forEach(t => {
         if (t.nextElementSibling) t.nextElementSibling.style.display = 'none';

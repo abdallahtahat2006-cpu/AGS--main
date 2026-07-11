@@ -785,7 +785,12 @@
 
 .rfq-hero {
   background: linear-gradient(135deg, var(--dark-900), var(--primary-800));
-  padding: var(--space-16) 0;
+  padding: var(--space-10) 0 var(--space-12) 0;
+}
+@media (max-width: 768px) {
+  .rfq-hero {
+    padding: var(--space-4) 0 var(--space-6) 0;
+  }
 }
 
 .rfq-layout {

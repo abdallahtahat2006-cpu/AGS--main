@@ -50,26 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Do not move navMenu to body, keep it in the navbar for desktop!
     // document.body.appendChild(navMenu);
 
-    // 1. Add Logo Header at the top (Mobile Only)
-    const originalLogo = document.querySelector('.navbar .logo');
-    if (originalLogo) {
-      const logoHeader = document.createElement('div');
-      logoHeader.className = 'drawer-mobile-only'; // custom class to hide on desktop
-      logoHeader.style.cssText = 'padding: 16px 24px 16px 24px; margin-bottom: 8px; border-bottom: 1px solid var(--gray-100); display: flex; align-items: center; justify-content: flex-start;';
-      const clonedLogo = originalLogo.cloneNode(true);
-      clonedLogo.style.cssText = 'text-decoration: none; display: flex; justify-content: flex-start; align-items: center;';
-      
-      const img = clonedLogo.querySelector('img');
-      if (img) {
-        img.style.height = '45px';
-        img.style.width = 'auto';
-        img.style.maxWidth = '100%';
-        img.style.objectFit = 'contain';
-      }
-      
-      logoHeader.appendChild(clonedLogo);
-      navMenu.insertBefore(logoHeader, navMenu.firstChild);
-    }
+    // Removed Logo Injection at the top (Mobile Only)
 
     const desktopNav = document.getElementById('desktopNav');
     if (desktopNav) {

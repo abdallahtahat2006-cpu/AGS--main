@@ -37,8 +37,39 @@
       background: #F8F9FA !important;
       border: 1px solid #E2E8F0 !important;
     }
-    .rfq-info-card h4 {
+    .accordion-card {
+      cursor: pointer;
+      user-select: none;
+    }
+    .accordion-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .accordion-header h4 {
+      margin-bottom: 0 !important;
       color: #0F2C59 !important;
+    }
+    .accordion-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+    }
+    .accordion-card.expanded .accordion-body {
+      max-height: 1000px;
+      margin-top: var(--space-4);
+    }
+    .accordion-icon {
+      transition: transform 0.3s ease;
+      color: #0F2C59;
+    }
+    .accordion-card.expanded .accordion-icon {
+      transform: rotate(180deg);
+    }
+    @media (max-width: 768px) {
+      .hide-on-mobile {
+        display: none !important;
+      }
     }
     .rfq-step-num {
       background: #0F2C59 !important;
@@ -226,17 +257,17 @@
   <!-- RFQ Hero -->
   <div class="rfq-hero">
     <div class="container">
-      <div class="breadcrumb" style="margin-bottom:var(--space-4);">
+      <div class="breadcrumb" style="margin-bottom:var(--space-2);">
         <div class="breadcrumb-item"><a href="index.html" style="color:rgba(255,255,255,0.5);">الرئيسية</a></div>
         <span class="breadcrumb-sep" style="color:rgba(255,255,255,0.3);">›</span>
         <div class="breadcrumb-item" style="color:rgba(255,255,255,0.8);">طلب عرض سعر</div>
       </div>
       <div style="max-width:650px;">
         <div class="section-badge"
-          style="background:#1E293B;color:#FF6B00;border:none;margin-bottom:var(--space-4);">
+          style="background:#1E293B;color:#FF6B00;border:none;margin-bottom:var(--space-2);">
           💼 B2B Enterprise</div>
         <h1
-          style="font-size:clamp(2rem,4vw,2.8rem);font-weight:900;color:var(--white);margin-bottom:var(--space-4);line-height:1.2;">
+          style="font-size:clamp(2rem,4vw,2.8rem);font-weight:900;color:var(--white);margin-bottom:var(--space-2);line-height:1.2;">
           طلب عرض سعر <span style="color:#FF6B00;">مخصص</span><br />لاحتياجات شركتك
         </h1>
         <p style="color:#E2E8F0;font-size:var(--text-lg);line-height:1.8;">
@@ -328,53 +359,59 @@
 
               <div class="rfq-products-list" id="rfqProductsList">
                 <!-- Default Product Row -->
-                <div class="rfq-product-item" id="product-row-1">
-                  <div style="font-size:var(--text-sm);color:var(--gray-400);font-weight:600;min-width:24px;">1</div>
-                  <div style="flex:2;">
-                    <input type="text" class="form-control" style="margin-bottom:0;"
+                <div class="rfq-product-item" id="product-row-1" style="flex-direction:column; align-items:stretch; gap:var(--space-3);">
+                  <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                    <div style="font-size:var(--text-sm);color:var(--gray-400);font-weight:600;">منتج رقم 1</div>
+                    <button type="button" onclick="removeProductRow(1)" style="color:#EF4444;background:none;border:none;cursor:pointer;padding:var(--space-1);">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div style="width:100%;">
+                    <input type="text" class="form-control prod-name-input" style="margin-bottom:0;"
                       placeholder="اسم المنتج أو رقم الكود (SKU)..." list="dbProductsList" required />
                   </div>
-                  <div style="flex:1;display:flex;gap:var(--space-2);align-items:center;">
-                    <input type="number" class="form-control" style="margin-bottom:0;width:80px;" placeholder="الكمية"
-                      min="1" value="1" required />
-                    <select class="form-control" style="margin-bottom:0;flex:1;">
+                  <div class="qty-container" style="width:100%;display:none;">
+                    <input type="number" class="form-control prod-qty-input" style="margin-bottom:0;width:100%;" placeholder="الكمية"
+                      min="1" value="" required />
+                  </div>
+                  <div class="unit-container" style="width:100%;display:none;">
+                    <select class="form-control prod-unit-input" style="margin-bottom:0;width:100%;">
                       <option>قطعة</option>
                       <option>مجموعة</option>
                       <option>طقم</option>
                       <option>كرتون</option>
                     </select>
                   </div>
-                  <button type="button" onclick="removeProductRow(1)"
-                    style="color:#EF4444;background:none;border:none;cursor:pointer;padding:var(--space-1);">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <polyline points="3 6 5 6 21 6" />
-                      <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2" />
-                    </svg>
-                  </button>
                 </div>
-                <div class="rfq-product-item" id="product-row-2">
-                  <div style="font-size:var(--text-sm);color:var(--gray-400);font-weight:600;min-width:24px;">2</div>
-                  <div style="flex:2;">
-                    <input type="text" class="form-control" style="margin-bottom:0;"
+                <div class="rfq-product-item" id="product-row-2" style="flex-direction:column; align-items:stretch; gap:var(--space-3);">
+                  <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                    <div style="font-size:var(--text-sm);color:var(--gray-400);font-weight:600;">منتج رقم 2</div>
+                    <button type="button" onclick="removeProductRow(2)" style="color:#EF4444;background:none;border:none;cursor:pointer;padding:var(--space-1);">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div style="width:100%;">
+                    <input type="text" class="form-control prod-name-input" style="margin-bottom:0;"
                       placeholder="اسم المنتج أو رقم الكود (SKU)..." list="dbProductsList" />
                   </div>
-                  <div style="flex:1;display:flex;gap:var(--space-2);align-items:center;">
-                    <input type="number" class="form-control" style="margin-bottom:0;width:80px;" placeholder="الكمية"
-                      min="1" value="1" />
-                    <select class="form-control" style="margin-bottom:0;flex:1;">
+                  <div class="qty-container" style="width:100%;display:none;">
+                    <input type="number" class="form-control prod-qty-input" style="margin-bottom:0;width:100%;" placeholder="الكمية"
+                      min="1" value="" />
+                  </div>
+                  <div class="unit-container" style="width:100%;display:none;">
+                    <select class="form-control prod-unit-input" style="margin-bottom:0;width:100%;">
                       <option>قطعة</option>
                       <option>مجموعة</option>
                       <option>طقم</option>
                       <option>كرتون</option>
                     </select>
                   </div>
-                  <button type="button" onclick="removeProductRow(2)"
-                    style="color:#EF4444;background:none;border:none;cursor:pointer;padding:var(--space-1);">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <polyline points="3 6 5 6 21 6" />
-                      <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2" />
-                    </svg>
-                  </button>
                 </div>
               </div>
 
@@ -504,9 +541,13 @@
       <!-- Sidebar -->
       <div class="rfq-sidebar">
         <!-- Process Steps -->
-        <div class="rfq-info-card">
-          <h4>كيف يعمل نظام RFQ؟</h4>
-          <div class="rfq-process-steps">
+        <div class="rfq-info-card accordion-card" onclick="this.classList.toggle('expanded')">
+          <div class="accordion-header">
+            <h4>كيف يعمل نظام RFQ؟</h4>
+            <svg class="accordion-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+          <div class="accordion-body">
+            <div class="rfq-process-steps">
             <div class="rfq-step">
               <div class="rfq-step-num">1</div>
               <div>
@@ -543,12 +584,17 @@
               </div>
             </div>
           </div>
+          </div>
         </div>
 
         <!-- B2B Benefits -->
-        <div class="rfq-info-card">
-          <h4>مزايا حساب الشركات</h4>
-          <div style="display:flex;flex-direction:column;gap:var(--space-3);">
+        <div class="rfq-info-card accordion-card" onclick="this.classList.toggle('expanded')">
+          <div class="accordion-header">
+            <h4>مزايا حساب الشركات</h4>
+            <svg class="accordion-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+          <div class="accordion-body">
+            <div style="display:flex;flex-direction:column;gap:var(--space-3);">
             <div style="display:flex;align-items:center;gap:var(--space-3);">
               <div
                 style="width:36px;height:36px;background:#E6F0FA;border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
@@ -590,12 +636,13 @@
               </div>
             </div>
           </div>
+          </div>
         </div>
 
 
 
         <!-- Contact Direct -->
-        <div
+        <div class="hide-on-mobile"
           style="background:#0F2C59;border-radius:var(--radius-2xl);padding:var(--space-6);text-align:center;">
           <div style="margin-bottom:var(--space-3);"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
           <h4 style="color:#FFFFFF;font-weight:700;margin-bottom:var(--space-2);">تحتاج مساعدة؟</h4>
@@ -939,21 +986,26 @@
       const row = document.createElement('div');
       row.className = 'rfq-product-item';
       row.id = `product-row-${rowCount}`;
+      row.style.cssText = 'flex-direction:column; align-items:stretch; gap:var(--space-3);';
       row.innerHTML = `
-    <div style="font-size:var(--text-sm);color:var(--gray-400);font-weight:600;min-width:24px;">${rowCount}</div>
-    <div style="flex:2;">
-      <input type="text" class="form-control" style="margin-bottom:0;" placeholder="اسم المنتج أو رقم الكود (SKU)..." list="dbProductsList" />
-    </div>
-    <div style="flex:1;display:flex;gap:var(--space-2);align-items:center;">
-      <input type="number" class="form-control" style="margin-bottom:0;width:80px;" placeholder="الكمية" min="1" value="1" />
-      <select class="form-control" style="margin-bottom:0;flex:1;">
-        <option>قطعة</option><option>مجموعة</option><option>طقم</option><option>كرتون</option>
-      </select>
-    </div>
-    <button type="button" onclick="removeProductRow(${rowCount})" style="color:var(--danger);background:none;border:none;cursor:pointer;padding:var(--space-1);">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
-    </button>
-  `;
+        <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+          <div style="font-size:var(--text-sm);color:var(--gray-400);font-weight:600;">منتج رقم ${rowCount}</div>
+          <button type="button" onclick="removeProductRow(${rowCount})" style="color:var(--danger);background:none;border:none;cursor:pointer;padding:var(--space-1);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+          </button>
+        </div>
+        <div style="width:100%;">
+          <input type="text" class="form-control prod-name-input" style="margin-bottom:0;" placeholder="اسم المنتج أو رقم الكود (SKU)..." list="dbProductsList" />
+        </div>
+        <div class="qty-container" style="width:100%;display:none;">
+          <input type="number" class="form-control prod-qty-input" style="margin-bottom:0;width:100%;" placeholder="الكمية" min="1" value="" />
+        </div>
+        <div class="unit-container" style="width:100%;display:none;">
+          <select class="form-control prod-unit-input" style="margin-bottom:0;width:100%;">
+            <option>قطعة</option><option>مجموعة</option><option>طقم</option><option>كرتون</option>
+          </select>
+        </div>
+      `;
       list.appendChild(row);
       row.style.animation = 'fadeInUp 0.3s ease';
     }
@@ -1087,6 +1139,30 @@
       document.getElementById('selectedFile').style.display = 'none';
       document.getElementById('dropzone').style.display = 'block';
     }
+
+    // Sequential field revelation
+    document.addEventListener('input', function(e) {
+      if (e.target.classList.contains('prod-name-input')) {
+        const row = e.target.closest('.rfq-product-item');
+        if (!row) return;
+        const qtyContainer = row.querySelector('.qty-container');
+        if (e.target.value.trim() !== '') {
+          qtyContainer.style.display = 'block';
+          qtyContainer.style.animation = 'fadeInUp 0.3s ease';
+        }
+      }
+      
+      if (e.target.classList.contains('prod-qty-input')) {
+        const row = e.target.closest('.rfq-product-item');
+        if (!row) return;
+        const unitContainer = row.querySelector('.unit-container');
+        if (e.target.value.trim() !== '' && e.target.value > 0) {
+          unitContainer.style.display = 'block';
+          unitContainer.style.animation = 'fadeInUp 0.3s ease';
+        }
+      }
+    });
+
   </script>
 </body>
 
