@@ -1461,7 +1461,7 @@ body.drawer-is-open .navbar {
   .footer-bottom { flex-direction: column; gap: var(--space-4); text-align: center; }
   .hero-stats { gap: var(--space-6); }
   #viewToggles { display: none !important; }
-  body.cart-open .menu-toggle { display: none !important; }
+  body.cart-open .menu-toggle, body.cart-open .mobile-bottom-bar { display: none !important; }
 }
 
 
