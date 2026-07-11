@@ -943,6 +943,10 @@
   top: 0;
   height: 100vh;
   overflow-y: auto;
+  direction: ltr;
+}
+.dashboard-sidebar > * {
+  direction: rtl;
 }
 
 .dashboard-sidebar-header {
@@ -1009,7 +1013,6 @@
 .dashboard-main {
   flex: 1;
   background: #F1F5F9;
-  overflow-y: auto;
 }
 
 .dashboard-header {
