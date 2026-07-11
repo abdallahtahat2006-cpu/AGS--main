@@ -181,23 +181,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ---- Footer accordion (mobile only) ----
-  if (window.innerWidth <= 767) {
-    document.querySelectorAll('.footer-col .footer-heading').forEach(heading => {
-      // Skip the first col (about) – always open
-      const col = heading.closest('.footer-col');
-      if (!col || col === col.parentElement?.firstElementChild) return;
+  // ---- Footer accordion (mobile only) has been removed by request ----
 
-      heading.setAttribute('role', 'button');
-      heading.setAttribute('tabindex', '0');
-
-      const toggle = () => col.classList.toggle('accordion-open');
-      heading.addEventListener('click', toggle);
-      heading.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
-      });
-    });
-  }
 
   // ---- Bottom tab bar – mark active page ----
   const currentPage = location.pathname.split('/').pop() || 'index.html';
@@ -263,7 +248,10 @@ function closeAll() {
 
   // Close cart
   const cartDrawer = document.getElementById('cartDrawer');
-  if (cartDrawer) cartDrawer.style.left = '-420px';
+  if (cartDrawer) {
+    cartDrawer.style.left = '-420px';
+    document.body.classList.remove('cart-open');
+  }
 
   // Close search
   const searchBar = document.getElementById('searchBar');
@@ -284,7 +272,9 @@ function toggleCart() {
   if (cartDrawer) {
     const isOpen = cartDrawer.style.left === '0px';
     cartDrawer.style.left = isOpen ? '-420px' : '0px';
+    document.body.classList.toggle('cart-open', !isOpen);
     overlay?.classList.toggle('active', !isOpen);
+    document.body.classList.toggle('drawer-is-open', !isOpen);
   }
 }
 
@@ -363,7 +353,7 @@ function renderCartItems() {
   if(!cartContainer) return;
 
   if (cartItems.length === 0) {
-      cartContainer.innerHTML = '<div style="text-align:center;color:var(--gray-500);padding:var(--space-6);">السلة فارغة</div>';
+      cartContainer.innerHTML = '<div style="text-align:center;color:var(--gray-500);padding:var(--space-6); font-weight: 500;">لا يوجد منتجات بالسلة</div>';
       return;
   }
 
@@ -406,6 +396,12 @@ function updateCartCount() {
     setTimeout(() => { countEl.style.animation = ''; }, 300);
   }
   
+  document.querySelectorAll('.bar-cart-badge').forEach(badge => {
+    badge.textContent = total;
+    badge.style.animation = 'pulse 0.3s ease';
+    setTimeout(() => { badge.style.animation = ''; }, 300);
+  });
+
   const titleEl = document.getElementById('cartDrawerTitle');
   if(titleEl) {
       titleEl.textContent = `سلة التسوق (${total})`;
