@@ -274,7 +274,6 @@ function toggleCart() {
     cartDrawer.style.left = isOpen ? '-420px' : '0px';
     document.body.classList.toggle('cart-open', !isOpen);
     overlay?.classList.toggle('active', !isOpen);
-    document.body.classList.toggle('drawer-is-open', !isOpen);
   }
 }
 
