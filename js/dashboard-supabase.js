@@ -2134,3 +2134,110 @@ window.saveStoreSettings = async function() {
         btn.textContent = 'حفظ الإعدادات';
     }
 };
+// --- INSPECTIONS -------------------------------------------------------------
+window._inspectionsList = [];
+
+async function loadDashboardInspections() {
+    const tbody = document.getElementById('inspections-list');
+    if (!tbody) return;
+    tbody.innerHTML = emptyStateRow(7, 'جاري التحميل...');
+    try {
+        const { data: inspections, error } = await supabase.from('inspections').select('*').order('created_at', { ascending: false });
+        if (error) throw error;
+        window._inspectionsList = inspections || [];
+        
+        if (!inspections || inspections.length === 0) {
+            tbody.innerHTML = emptyStateRow(7, 'لا يوجد مواعيد فحص حالياً');
+            return;
+        }
+
+        tbody.innerHTML = inspections.map((ins, idx) => {
+            let statusColor = 'var(--gray-500)';
+            if (ins.status === 'تم التأكيد') statusColor = 'var(--success)';
+            if (ins.status === 'قيد المراجعة') statusColor = 'var(--warning)';
+            if (ins.status === 'مكتمل') statusColor = 'var(--primary-600)';
+
+            return `
+            <tr>
+                <td>
+                    <div style="font-weight:700;color:var(--dark-800);">${ins.customer_name || '-'}</div>
+                    <div style="font-size:12px;color:var(--gray-500);">${ins.company_name || '-'}</div>
+                </td>
+                <td style="color:var(--primary-600);font-weight:600;" dir="ltr">${ins.phone || '-'}</td>
+                <td style="font-weight:700;">${ins.inspection_date || '-'}</td>
+                <td style="color:var(--gray-600);">${ins.inspection_type || '-'}</td>
+                <td>
+                    <span style="display:inline-block;padding:2px 8px;border-radius:12px;background:${statusColor}20;color:${statusColor};font-size:11px;font-weight:700;">
+                        ${ins.status || 'قيد المراجعة'}
+                    </span>
+                </td>
+                <td>${new Date(ins.created_at).toLocaleDateString('ar-JO')}</td>
+                <td>
+                    <div style="display:flex;gap:8px;">
+                        <button class="btn btn-outline btn-sm" onclick="showInspectionDetails(${idx})" style="font-size:11px;">تفاصيل</button>
+                        <select onchange="updateInspectionStatus('${ins.id}', this.value)" style="padding:4px; border-radius:4px; border:1px solid var(--gray-300); font-size:11px;">
+                            <option value="قيد المراجعة" ${ins.status === 'قيد المراجعة' ? 'selected' : ''}>قيد المراجعة</option>
+                            <option value="تم التأكيد" ${ins.status === 'تم التأكيد' ? 'selected' : ''}>تأكيد</option>
+                            <option value="مكتمل" ${ins.status === 'مكتمل' ? 'selected' : ''}>مكتمل</option>
+                            <option value="ملغي" ${ins.status === 'ملغي' ? 'selected' : ''}>إلغاء</option>
+                        </select>
+                        <button class="btn btn-outline btn-sm" onclick="deleteInspection('${ins.id}')" style="font-size:11px;color:red;border-color:red;">حذف</button>
+                    </div>
+                </td>
+            </tr>`;
+        }).join('');
+        
+        const badge = document.getElementById('nav-badge-inspections');
+        const pendingCount = inspections.filter(i => i.status === 'قيد المراجعة').length;
+        if (badge) {
+            badge.textContent = pendingCount;
+            badge.style.display = pendingCount > 0 ? 'inline-block' : 'none';
+        }
+    } catch (err) {
+        tbody.innerHTML = emptyStateRow(7, 'حدث خطأ في تحميل المواعيد');
+        console.error(err);
+    }
+}
+
+window.showInspectionDetails = function(index) {
+    const ins = window._inspectionsList[index];
+    const text = `
+العميل: ${ins.customer_name || '-'}
+الشركة: ${ins.company_name || '-'}
+الهاتف: ${ins.phone || '-'}
+تاريخ الفحص: ${ins.inspection_date || '-'}
+نوع الفحص: ${ins.inspection_type || '-'}
+
+الملاحظات:
+${ins.notes || '-'}
+    `;
+    showDetailsModal("تفاصيل موعد الفحص", text);
+};
+
+window.updateInspectionStatus = async function(id, newStatus) {
+    try {
+        const { error } = await supabase.from('inspections').update({ status: newStatus }).eq('id', id);
+        if (error) throw error;
+        showToast('تم بنجاح', 'تم تحديث حالة الموعد', 'success');
+        loadDashboardInspections();
+    } catch (err) {
+        console.error(err);
+        showToast('خطأ', 'تعذر تحديث الحالة', 'error');
+    }
+};
+
+window.deleteInspection = async function(id) {
+    if(!confirm('هل أنت متأكد من حذف هذا الموعد؟')) return;
+    try {
+        const { error } = await supabase.from('inspections').delete().eq('id', id);
+        if (error) throw error;
+        showToast('تم بنجاح', 'تم حذف الموعد', 'success');
+        loadDashboardInspections();
+    } catch (err) {
+        console.error(err);
+        showToast('خطأ', 'تعذر حذف الموعد', 'error');
+    }
+};
+
+// Add load call to the global init
+setTimeout(loadDashboardInspections, 1500);

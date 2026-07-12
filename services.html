@@ -822,8 +822,8 @@
         const services = Array.from(checked).map(c => c.nextElementSibling.textContent.trim()).join('، ');
         const inspection_type = services || 'غير محدد';
 
-        const inspection_date = inputs[4]?.value || new Date().toISOString().split('T')[0];
-        const time = inputs[5]?.value || '';
+        const inspection_date = inputs[5]?.value || new Date().toISOString().split('T')[0];
+        const time = inputs[6]?.value || '';
 
         const textarea = document.querySelector('#bookingForm textarea');
         const address = textarea?.value || '';
