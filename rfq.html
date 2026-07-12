@@ -370,8 +370,9 @@
                     </button>
                   </div>
                   <div style="width:100%;">
-                    <input type="text" class="form-control prod-name-input" style="margin-bottom:0;"
-                      placeholder="اسم المنتج أو رقم الكود (SKU)..." list="dbProductsList" required />
+                    <select class="form-control prod-name-input" style="margin-bottom:0;" required>
+                      <option value="" disabled selected>اسم المنتج أو رقم الكود (SKU)...</option>
+                    </select>
                   </div>
                   <div class="qty-container" style="width:100%;display:none;">
                     <input type="number" class="form-control prod-qty-input" style="margin-bottom:0;width:100%;" placeholder="الكمية"
@@ -397,8 +398,9 @@
                     </button>
                   </div>
                   <div style="width:100%;">
-                    <input type="text" class="form-control prod-name-input" style="margin-bottom:0;"
-                      placeholder="اسم المنتج أو رقم الكود (SKU)..." list="dbProductsList" />
+                    <select class="form-control prod-name-input" style="margin-bottom:0;">
+                      <option value="" disabled selected>اسم المنتج أو رقم الكود (SKU)...</option>
+                    </select>
                   </div>
                   <div class="qty-container" style="width:100%;display:none;">
                     <input type="number" class="form-control prod-qty-input" style="margin-bottom:0;width:100%;" placeholder="الكمية"
@@ -972,8 +974,12 @@
       if (window.fetchProducts) {
         const products = await fetchProducts('all');
         const datalist = document.getElementById('dbProductsList');
-        if (datalist && products.length > 0) {
-          datalist.innerHTML = products.map(p => `<option value="${p.title}">${p.brand ? p.brand + ' - ' : ''}${p.title}</option>`).join('');
+        if (products.length > 0) {
+          const optionsHtml = products.map(p => `<option value="${p.title}">${p.brand ? p.brand + ' - ' : ''}${p.title}</option>`).join('');
+          if (datalist) datalist.innerHTML = optionsHtml;
+          document.querySelectorAll('select.prod-name-input').forEach(select => {
+            select.innerHTML += optionsHtml;
+          });
         }
       }
     });
@@ -995,7 +1001,10 @@
           </button>
         </div>
         <div style="width:100%;">
-          <input type="text" class="form-control prod-name-input" style="margin-bottom:0;" placeholder="اسم المنتج أو رقم الكود (SKU)..." list="dbProductsList" />
+          <select class="form-control prod-name-input" style="margin-bottom:0;">
+            <option value="" disabled selected>اسم المنتج أو رقم الكود (SKU)...</option>
+            ${document.getElementById('dbProductsList')?.innerHTML || ''}
+          </select>
         </div>
         <div class="qty-container" style="width:100%;display:none;">
           <input type="number" class="form-control prod-qty-input" style="margin-bottom:0;width:100%;" placeholder="الكمية" min="1" value="" />

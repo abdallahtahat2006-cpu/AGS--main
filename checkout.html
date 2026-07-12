@@ -962,14 +962,21 @@
     // Accordion Logic
     // ──────────────────────────────────────────
     function toggleSection(sectionId) {
+      const sectionEl = document.getElementById(`section-${sectionId}`);
+      const titleEl = document.getElementById(`title-${sectionId}`);
+      const isCurrentlyOpen = !sectionEl?.classList.contains('collapsed');
+
       // Close all sections
       ['personal', 'delivery', 'payment'].forEach(id => {
         document.getElementById(`section-${id}`)?.classList.add('collapsed');
         document.getElementById(`title-${id}`)?.classList.add('collapsed');
       });
-      // Open the clicked one
-      document.getElementById(`section-${sectionId}`)?.classList.remove('collapsed');
-      document.getElementById(`title-${sectionId}`)?.classList.remove('collapsed');
+
+      // Open the clicked one if it was closed
+      if (!isCurrentlyOpen) {
+        sectionEl?.classList.remove('collapsed');
+        titleEl?.classList.remove('collapsed');
+      }
     }
 
     function checkProgress() {
