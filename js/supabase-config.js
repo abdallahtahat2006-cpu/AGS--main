@@ -264,35 +264,23 @@ async function loadDynamicAnnouncement() {
     if (!window.supabaseClient) return;
     const adContainer = document.getElementById('dynamic-ad-container');
     
-    const cacheKey = 'announcements_cache';
-    const cachedItem = sessionStorage.getItem(cacheKey);
     let announcementData = null;
 
-    if (cachedItem) {
-        const { timestamp, data } = JSON.parse(cachedItem);
-        if (Date.now() - timestamp < 5 * 60 * 1000) {
-            announcementData = data;
-        }
-    }
+    try {
+        const { data, error } = await window.supabaseClient
+            .from('announcements')
+            .select('*')
+            .eq('is_active', true)
+            .order('created_at', { ascending: false });
 
-    if (!announcementData) {
-        try {
-            const { data, error } = await window.supabaseClient
-                .from('announcements')
-                .select('*')
-                .eq('is_active', true)
-                .order('created_at', { ascending: false });
-
-            if (error) {
-                console.error('Error loading announcement:', error);
-                return;
-            }
-            announcementData = data;
-            sessionStorage.setItem(cacheKey, JSON.stringify({ timestamp: Date.now(), data }));
-        } catch (e) {
-            console.error(e);
+        if (error) {
+            console.error('Error loading announcement:', error);
             return;
         }
+        announcementData = data;
+    } catch (e) {
+        console.error(e);
+        return;
     }
 
     if (!announcementData || announcementData.length === 0) {

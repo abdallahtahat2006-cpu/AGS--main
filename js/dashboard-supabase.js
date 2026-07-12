@@ -918,6 +918,48 @@ async function loadDashboardOrders() {
     }
 }
 
+window.showOrderDetails = async function(orderId) {
+    const modal = document.getElementById('orderDetailsModal');
+    const content = document.getElementById('orderDetailsContent');
+    const idSpan = document.getElementById('modalOrderId');
+    if (!modal || !content || !idSpan) return;
+
+    idSpan.textContent = '#' + orderId.split('-')[0];
+    content.innerHTML = '<div style="text-align:center;padding:2rem;">جاري التحميل...</div>';
+    modal.style.display = 'flex';
+
+    try {
+        const { data: order, error } = await supabase.from('orders').select('*').eq('id', orderId).single();
+        if (error) throw error;
+        
+        let itemsHtml = '';
+        if (order.items && order.items.length > 0) {
+            itemsHtml = `<table class="data-table" style="margin-top:1rem;width:100%;">
+                <thead><tr><th style="text-align:right">المنتج</th><th style="text-align:center">الكمية</th><th style="text-align:left">السعر</th></tr></thead><tbody>` + 
+                order.items.map(item => `<tr><td style="text-align:right">${item.title}</td><td style="text-align:center">${item.quantity}</td><td style="text-align:left" dir="ltr">${(parseFloat(item.price)||0).toLocaleString('en-US')} د.أ</td></tr>`).join('') +
+                `</tbody></table>`;
+        } else {
+            itemsHtml = '<p style="color:var(--gray-500);text-align:center;margin-top:1rem;">لا توجد تفاصيل منتجات</p>';
+        }
+
+        content.innerHTML = `
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;background:var(--gray-50);padding:1rem;border-radius:var(--radius-md);">
+                <div><strong>العميل:</strong> ${order.customer_name || '-'}</div>
+                <div><strong>الهاتف:</strong> <a href="tel:${order.phone}" dir="ltr" style="display:inline-block">${order.phone || '-'}</a></div>
+                <div><strong>المدينة:</strong> ${order.city || '-'}</div>
+                <div><strong>العنوان:</strong> ${order.address || '-'}</div>
+                <div><strong>التاريخ:</strong> <span dir="ltr">${new Date(order.created_at).toLocaleString('en-GB')}</span></div>
+                <div><strong>الإجمالي:</strong> ${(parseFloat(order.total_amount)||0).toLocaleString('en-US')} د.أ</div>
+                <div style="grid-column:1/-1;"><strong>ملاحظات:</strong> ${order.notes || '-'}</div>
+            </div>
+            <h4 style="font-weight:700;margin-bottom:0.5rem;color:var(--dark-800);">المنتجات المطلوبة</h4>
+            ${itemsHtml}
+        `;
+    } catch (err) {
+        content.innerHTML = `<div style="text-align:center;padding:2rem;color:red;">تعذر تحميل تفاصيل الطلب: ${err.message}</div>`;
+    }
+};
+
 // ─── RFQs ─────────────────────────────────────────────────────────────────────
 async function loadDashboardRFQs() {
     const tbody = document.querySelector('#section-rfqs .data-table tbody');
@@ -1492,6 +1534,9 @@ window.showRFQModal = function(index) {
 الشركة: ${rfq.company_name || '-'}
 الهاتف: ${rfq.phone || '-'}
 البريد الإلكتروني: ${rfq.email || '-'}
+طريقة الدفع: ${rfq.payment_method || '-'}
+الجدول الزمني: ${rfq.delivery_time || '-'}
+يحتاج فاتورة ضريبية: ${rfq.needs_invoice || '-'}
 
 تفاصيل الطلب:
 ${rfq.details || ''}`;

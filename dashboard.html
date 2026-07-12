@@ -484,7 +484,6 @@
                   <option>تم التسليم</option>
                   <option>ملغى</option>
                 </select>
-                <button class="btn btn-primary btn-sm">تصدير Excel</button>
               </div>
             </div>
             <table class="data-table">
@@ -1258,6 +1257,29 @@
     </div>
   </div>
 
+  <!-- Modal: Order Details -->
+  <div id="orderDetailsModal"
+    style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,0.6);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+    <div
+      style="background:var(--white);padding:var(--space-6);border-radius:var(--radius-xl);width:90%;max-width:600px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-xl);position:relative;">
+      <div style="margin-bottom:var(--space-4);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-size:var(--text-xl);font-weight:800;">تفاصيل الطلب <span id="modalOrderId" style="color:var(--primary-600)"></span></h3>
+        <button onclick="document.getElementById('orderDetailsModal').style.display='none'"
+          style="background:none;border:none;cursor:pointer;color:var(--gray-500);"><svg viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" width="20" height="20">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg></button>
+      </div>
+      <div id="orderDetailsContent" style="font-size:var(--text-sm); line-height:1.6;">
+        <!-- Details will be loaded here dynamically -->
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:var(--space-3);margin-top:var(--space-5);">
+        <button type="button" class="btn btn-outline" onclick="document.getElementById('orderDetailsModal').style.display='none'">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
   <div class="toast-container" id="toastContainer"></div>
 
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
@@ -1342,9 +1364,15 @@
     }
 
     document.addEventListener('click', (e) => {
+      // Close notifications panel
       if (!e.target.closest('.dashboard-header-actions')) {
         const panel = document.getElementById('notifPanel');
         if (panel && panel.style.display === 'block') toggleNotifications();
+      }
+      
+      // Close any modal if clicked on its overlay
+      if (e.target.id && e.target.id.endsWith('Modal') && e.target.style.display !== 'none') {
+        e.target.style.display = 'none';
       }
     });
 

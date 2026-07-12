@@ -441,7 +441,7 @@
               <div class="grid grid-2" style="gap:var(--space-4);">
                 <div class="form-group">
                   <label class="form-label">طريقة الدفع المفضلة</label>
-                  <select class="form-control">
+                  <select class="form-control" id="rfqPaymentMethod">
                     <option>تحويل بنكي</option>
                     <option>دفع عند الاستلام</option>
                     <option>بطاقة ائتمان</option>
@@ -451,7 +451,7 @@
                 </div>
                 <div class="form-group">
                   <label class="form-label">الجدول الزمني للتسليم</label>
-                  <select class="form-control">
+                  <select class="form-control" id="rfqDeliveryTime">
                     <option>عاجل (1-3 أيام)</option>
                     <option>قياسي (أسبوع)</option>
                     <option>2-3 أسابيع</option>
@@ -1062,6 +1062,11 @@
           }
         });
 
+        const paymentMethod = document.getElementById('rfqPaymentMethod')?.value || '-';
+        const deliveryTime = document.getElementById('rfqDeliveryTime')?.value || '-';
+        const invoiceNode = document.querySelector('input[name="invoice"]:checked');
+        const needsInvoice = invoiceNode && invoiceNode.value === 'yes' ? 'نعم' : 'لا';
+
         if (hasProducts) {
           details = productsText + '\nتفاصيل إضافية:\n' + details;
         }
@@ -1098,6 +1103,9 @@
             email: email,
             phone: phone,
             details: details,
+            payment_method: paymentMethod,
+            delivery_time: deliveryTime,
+            needs_invoice: needsInvoice,
             status: 'انتظار'
           }]);
           if (error) throw error;
